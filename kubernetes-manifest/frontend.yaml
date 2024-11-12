@@ -20,14 +20,44 @@ spec:
       labels:
         app: frontend
     spec:
+      serviceAccountName: frontend-sa # Bind to a specific service account for RBAC
+      automountServiceAccountToken: false # Disable automatic service account token mounting
       containers:
       - name: frontend
-        image: ogochukwuozotta/frontend-js:latest
+        image: ogochukwuozotta/frontend-js:1.0 # Use a specific version tag
         env:
         - name: VITE_REACT_APP_API_URL
-          value: "http://quizapp.cloudcorehub.com/api/questions"
+          value: "http://quizapp.xyz.com/api/questions"
         ports:
         - containerPort: 8080
+        resources:
+          requests:
+            cpu: "200m" # CPU request
+            memory: "256Mi" # Memory request
+          limits:
+            cpu: "400m" # CPU limit
+            memory: "512Mi" # Memory limit
+        volumeMounts:
+        - name: frontend-storage
+          mountPath: /data/storage # Adjust mount path as needed
+      volumes:
+      - name: frontend-storage
+        persistentVolumeClaim:
+          claimName: frontend-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: frontend-pvc
+  namespace: quiz
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi # Storage request for PVC
+    limits:
+      storage: 1Gi # Storage limit for PVC
 ---
 apiVersion: v1
 kind: Service
@@ -41,3 +71,33 @@ spec:
   - port: 8080
     protocol: TCP
   type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend-sa
+  namespace: quiz
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: frontend-role
+  namespace: quiz
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: frontend-role-binding
+  namespace: quiz
+subjects:
+- kind: ServiceAccount
+  name: frontend-sa
+  namespace: quiz
+roleRef:
+  kind: Role
+  name: frontend-role
+  apiGroup: rbac.authorization.k8s.io
