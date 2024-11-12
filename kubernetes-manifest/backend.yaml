@@ -20,11 +20,10 @@ spec:
       labels:
         app: backend
     spec:
-      serviceAccountName: backend-sa # Bind a specific service account for RBAC
-      automountServiceAccountToken: false # Disable automatic service account token mounting
+      serviceAccountName: backend-sa
       containers:
       - name: backend
-        image: shantanu789/backend-api # Use a specific version tag
+        image: shantanu789/backend-api:v1.0 # Specify an explicit image tag
         ports:
         - containerPort: 3000
         env:
@@ -35,14 +34,14 @@ spec:
               key: mongo-uri
         resources:
           requests:
-            cpu: "250m" # CPU request
-            memory: "256Mi" # Memory request
+            cpu: "250m"
+            memory: "256Mi"
           limits:
-            cpu: "500m" # CPU limit
-            memory: "512Mi" # Memory limit
+            cpu: "500m"
+            memory: "512Mi"
         volumeMounts:
         - name: backend-storage
-          mountPath: /data/storage # Adjust path as needed
+          mountPath: /data/storage
       volumes:
       - name: backend-storage
         persistentVolumeClaim:
@@ -58,9 +57,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi # Storage request for PVC
-    limits:
-      storage: 1Gi # Storage limit for PVC
+      storage: 500Mi
 ---
 apiVersion: v1
 kind: Service
