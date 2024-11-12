@@ -24,7 +24,7 @@ spec:
       automountServiceAccountToken: false # Disable automatic service account token mounting
       containers:
       - name: frontend
-        image: ogochukwuozotta/frontend-js:1.0 # Use a specific version tag
+        image: shantanu789/frontend-js # Use a specific version tag
         env:
         - name: VITE_REACT_APP_API_URL
           value: "http://quizapp.campixart.com/api/questions"
