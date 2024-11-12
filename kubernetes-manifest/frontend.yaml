@@ -27,7 +27,7 @@ spec:
         image: ogochukwuozotta/frontend-js:1.0 # Use a specific version tag
         env:
         - name: VITE_REACT_APP_API_URL
-          value: "http://quizapp.xyz.com/api/questions"
+          value: "http://quizapp.campixart.com/api/questions"
         ports:
         - containerPort: 8080
         resources:
