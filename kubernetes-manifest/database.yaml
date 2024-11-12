@@ -43,7 +43,7 @@ metadata:
   name: mongo-pv
   namespace: quiz
 spec:
-  capacity: 
+  capacity:
     storage: 1Gi
   volumeMode: Filesystem
   accessModes:
@@ -57,15 +57,14 @@ kind: PersistentVolumeClaim
 metadata:
   name: mongo-pvc
   namespace: quiz
-spec: 
-  accessModes:  
+spec:
+  accessModes:
     - ReadWriteOnce
-  storageClassName: "" # Ensures local hostPath storage
   resources:
     requests:
       storage: 1Gi # Enforcing storage request
-    limits:
-      storage: 1Gi # Enforcing storage limit to avoid excessive usage
+  volumeMode: Filesystem
+  volumeName: mongo-pv
 ---
 apiVersion: v1
 kind: Service
