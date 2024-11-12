@@ -20,10 +20,9 @@ spec:
       labels:
         app: backend
     spec:
-      serviceAccountName: backend-sa
       containers:
       - name: backend
-        image: shantanu789/backend-api:v1.0 # Specify an explicit image tag
+        image: shantanu789/backend-api:latest
         ports:
         - containerPort: 3000
         env:
@@ -32,32 +31,6 @@ spec:
             secretKeyRef:
               name: mongo-secret
               key: mongo-uri
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-        volumeMounts:
-        - name: backend-storage
-          mountPath: /data/storage
-      volumes:
-      - name: backend-storage
-        persistentVolumeClaim:
-          claimName: backend-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: backend-pvc
-  namespace: quiz
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 500Mi
 ---
 apiVersion: v1
 kind: Service
@@ -71,33 +44,3 @@ spec:
   - port: 3000
     protocol: TCP
   type: ClusterIP
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: backend-sa
-  namespace: quiz
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: backend-role
-  namespace: quiz
-rules:
-- apiGroups: [""]
-  resources: ["pods", "services"]
-  verbs: ["get", "list", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: backend-role-binding
-  namespace: quiz
-subjects:
-- kind: ServiceAccount
-  name: backend-sa
-  namespace: quiz
-roleRef:
-  kind: Role
-  name: backend-role
-  apiGroup: rbac.authorization.k8s.io
