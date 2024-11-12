@@ -934,7 +934,7 @@ terraform init -backend-config="bucket=cloudcore007"
 ```
 and then 
 ```
-terraform destroy -auto-approve
+terraform apply -destroy -auto-approve
 ```
 
 ### Conclusion: 
