@@ -55,9 +55,24 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi # Storage request for PVC
-    limits:
-      storage: 1Gi # Storage limit for PVC
+      storage: 500Mi
+  storageClassName: manual
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: frontend-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: "/data/frontend"
+    
 ---
 apiVersion: v1
 kind: Service
