@@ -1,4 +1,4 @@
-FROM node:22.10.0-slim
+FROM node:22.16.0-slim
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
